@@ -1,0 +1,59 @@
+version: "3.9"
+
+volumes:
+  storemanagementmysql:
+  medicalfilemysql:
+services:
+
+  storemanagement:
+    image: storemanagement
+    ports:
+      - 8085:8085
+    networks:
+      default:
+        aliases:
+          - storemanagement
+    depends_on:
+      - storemanagementmysql
+
+  medicalfile:
+    image: medicalfile
+    ports:
+      - 8086:8086
+    networks:
+      default:
+        aliases:
+          - medicalfile
+    depends_on:
+      - medicalfilemysql
+
+  medicalfilemysql:
+    image: mysql:5.7
+    ports:
+      - 8088:3306
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=medicalfile
+    volumes:
+      - medicalfilemysql:/var/lib/mysql
+
+    networks:
+      default:
+        aliases:
+          - medicalfilemysql
+
+  storemanagementmysql:
+    image: mysql:5.7
+    ports:
+      - 8089:3306
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_DATABASE=storemanagement
+    volumes:
+      - storemanagementmysql:/var/lib/mysql
+
+    networks:
+      default:
+        aliases:
+          - storemanagementmysql
+
